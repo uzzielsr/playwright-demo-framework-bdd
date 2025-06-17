@@ -192,7 +192,7 @@ npx playwright show-trace traces/<scenario-name>.zip
 ## Author
 
 Uzziel Sierra  
-QA Automation Engineer — Playwright BDD Architect
+Senior QA Engineer — Playwright BDD Architect
 
 ---
 
