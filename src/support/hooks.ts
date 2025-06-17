@@ -8,9 +8,12 @@ let context: BrowserContext;
 let page: Page;
 
 Before(async function () {
-    browser = await chromium.launch({ headless: false });
+    const isHeadless = process.env.HEADLESS !== 'false';
+    browser = await chromium.launch({ headless: isHeadless });
+
     context = await browser.newContext();
     await context.tracing.start({ screenshots: true, snapshots: true });
+
     page = await context.newPage();
     this.page = page;
 });

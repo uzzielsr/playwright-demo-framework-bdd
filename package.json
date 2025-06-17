@@ -4,7 +4,8 @@
   "type": "commonjs",
   "scripts": {
     "test": "cucumber-js src/features --require-module ts-node/register --require src/steps/**/*.ts --require src/support/**/*.ts",
-    "install:browsers": "npx playwright install --with-deps"
+    "install:browsers": "npx playwright install --with-deps",
+    "test:headed": "HEADLESS=false npm test"
   },
   "devDependencies": {
     "@playwright/test": "^1.43.1",

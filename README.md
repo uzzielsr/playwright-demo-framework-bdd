@@ -96,12 +96,12 @@ npm test -- --tags "@successful"
 npm test -- --tags "@invalid"
 ```
 
-### Headless Mode (default is headless: false)
+### Headless Mode (default is headless: true)
 
 Modify in `src/support/hooks.ts`:
 
 ```typescript
-browser = await chromium.launch({ headless: false });
+browser = await chromium.launch({ headless: true });
 ```
 
 ---
