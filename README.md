@@ -36,10 +36,12 @@ playwright-demo-framework-bdd/
 │   ├── pages/                          # Page Object Model (POM) implementation
 │   ├── steps/                          # Cucumber step definitions
 │   ├── support/                        # Global hooks, Cucumber World configuration
+│   ├── reporting/                      # Custom scripts for reporting (e.g., TestRail)
 │   └── utils/                          # Utility functions and helpers (for future use)
 │
 ├── screenshots/                        # Automatic screenshots per scenario
 ├── traces/                             # Playwright traces (only saved on failure)
+├── reports/                            # Cucumber JSON reports (used for TestRail upload)
 │
 ├── node_modules/                       # Node.js dependencies (ignored by Git)
 ├── .gitignore                          # Git ignore rules
@@ -124,76 +126,55 @@ npx playwright show-trace traces/<scenario-name>.zip
 
 ---
 
-## .gitignore Rules
+## TestRail Integration (Automatic Test Run Upload)
 
-```bash
-node_modules/
-test-results/
-playwright-report/
-blob-report/
-playwright/.cache/
-screenshots/
-traces/
-reports/
-.env
+### ✅ Environment Variables
+
+Create a `.env` file at the root with the following:
+
+```
+TESTRAIL_HOST=https://<your-subdomain>.testrail.io
+TESTRAIL_USER=your-email@example.com
+TESTRAIL_API_KEY=your-api-key
+TESTRAIL_PROJECT_ID=your_project_id
+TESTRAIL_SUITE_ID=your_suite_id
 ```
 
----
+### 🧩 Dependencies
 
-## Credentials & Test Data
+Make sure these are installed:
 
-- Test credentials are hardcoded for demo purposes.
-- In production use, credentials should be externalized into environment variables (`.env` files) and secured.
+```bash
+npm install dotenv ts-node axios
+```
 
----
-
-## Hooks Behavior
-
-- `Before`: launches browser, context, page and tracing.
-- `After`: captures screenshots, saves trace on failure, closes browser.
-
----
-
-## Roadmap (Enterprise Expansion)
-
-- TestRail Integration
-- Allure Reporting
-- Jenkins / GitHub Actions pipelines
-- Parallel browser grid execution
-- Cross-browser matrix
-- API-based login optimization
-- Secrets management
-- Dockerized runners
-
----
-
-## Sample Usage Summary
-
-### Run full suite:
+### 🧪 Run your Cucumber tests to generate the report:
 
 ```bash
 npm test
 ```
 
-### Run by tag:
+### 🏷️ Tag each scenario with its corresponding TestRail Case ID:
 
-```bash
-npm test -- --tags "@successful"
+```gherkin
+@C2331
+Scenario: Successful login
 ```
 
-### View latest trace:
+### ☁️ Upload results to TestRail:
 
 ```bash
-npx playwright show-trace traces/<scenario-name>.zip
+npx ts-node src/reporting/testrail-reporter.ts
 ```
 
----
+### 🧵 One-liner command:
 
-## Author
+```bash
+npm test && npx ts-node src/reporting/testrail-reporter.ts
+```
 
-Uzziel Sierra  
-Senior QA Engineer — Playwright BDD Architect
+### ✅ Example Output:
 
----
+```
 
-This framework is production-ready for enterprise QA pipelines.
+```

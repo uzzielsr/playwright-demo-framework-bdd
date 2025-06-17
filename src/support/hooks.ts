@@ -54,6 +54,11 @@ After(async function (scenario: ITestCaseHookParameter) {
         printedFeatures.add(featureTitle);
     }
 
+    const testrailTag = scenario.pickle.tags?.find(tag => /^@C\d+$/.test(tag.name));
+    if (testrailTag) {
+        this.testRailCaseId = parseInt(testrailTag.name.substring(2), 10);
+    }
+
     const status = scenario.result?.status?.toUpperCase() || 'UNKNOWN';
     const coloredStatus = status === 'PASSED' ? chalk.green(status) : chalk.red(status);
     console.log(`    Scenario: ${scenario.pickle.name} → ${coloredStatus}`);
