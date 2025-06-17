@@ -68,12 +68,14 @@ async function addResultForCase(runId: number, caseId: number, statusId: number,
             const statusText = status === 1 ? 'PASSED' : 'FAILED';
             console.log(`📤 Uploading result for C${caseId}: ${statusText} (${name})`);
 
-            const screenshotFile = `screenshots/${feature.name} -- ${name}.png`;
+            const featureName = feature.name.replace(/\s+/g, '_');
+            const scenarioName = name.replace(/\s+/g, '_');
+            const screenshotFile = `screenshots/${featureName}--${scenarioName}.png`;
             const screenshotPath = path.join(process.cwd(), screenshotFile);
 
             let comment = `Automated result for: ${name}`;
             if (fs.existsSync(screenshotPath)) {
-                const jenkinsScreenshotURL = `http://192.168.1.184:8080/job/playwright-demo/ws/${screenshotFile}`;
+                const jenkinsScreenshotURL = `http://192.168.1.184:8080/job/playwright-demo-framework-bdd/ws/${screenshotFile}`;
                 comment += `\nScreenshot: ${jenkinsScreenshotURL}`;
             }
 
