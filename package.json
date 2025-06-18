@@ -7,7 +7,8 @@
     "test:debug": "cucumber-js src/features --require-module ts-node/register --require src/steps/**/*.ts --require src/support/**/*.ts --format json:reports/report.json --format summary",
     "test:headed": "HEADLESS=false npm test",
     "install:browsers": "npx playwright install --with-deps",
-    "report:testrail": "ts-node src/reporting/testrail-reporter.ts"
+    "report:testrail": "ts-node src/reporting/testrail-reporter.ts",
+    "test:with-report": "npm test; npm run report:testrail"
   },
   "devDependencies": {
     "@cucumber/cucumber": "^9.1.2",

@@ -22,15 +22,22 @@ Before(async function () {
 
 After(async function (scenario: ITestCaseHookParameter) {
     const scenarioName = scenario.pickle.name.replace(/\s+/g, '_').toLowerCase();
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    const uniqueName = `${scenarioName}_${timestamp}`;
 
     const screenshotsDir = path.join(process.cwd(), 'screenshots');
     if (!fs.existsSync(screenshotsDir)) fs.mkdirSync(screenshotsDir);
-    await page.screenshot({ path: path.join(screenshotsDir, `${scenarioName}.png`), fullPage: true });
+    const screenshotFullPath = path.join(screenshotsDir, `${uniqueName}.png`);
+    await page.screenshot({ path: screenshotFullPath, fullPage: true });
+
+    this.screenshotFilename = `${uniqueName}.png`;
 
     const traceDir = path.join(process.cwd(), 'traces');
     if (!fs.existsSync(traceDir)) fs.mkdirSync(traceDir);
+    const tracePath = path.join(traceDir, `${uniqueName}.zip`);
+
     if (scenario.result?.status === 'FAILED') {
-        await context.tracing.stop({ path: path.join(traceDir, `${scenarioName}.zip`) });
+        await context.tracing.stop({ path: tracePath });
     } else {
         await context.tracing.stop();
     }
