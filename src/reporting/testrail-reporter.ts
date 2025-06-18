@@ -34,7 +34,12 @@ async function createTestRun(name: string): Promise<number> {
     return response.data.id;
 }
 
-async function addResultForCase(runId: number, caseId: number, statusId: number, comment: string) {
+async function addResultForCase(
+    runId: number,
+    caseId: number,
+    statusId: number,
+    comment: string
+) {
     await axios.post(
         `${TESTRAIL_HOST}/index.php?/api/v2/add_result_for_case/${runId}/${caseId}`,
         {
@@ -68,15 +73,15 @@ async function addResultForCase(runId: number, caseId: number, statusId: number,
             const statusText = status === 1 ? 'PASSED' : 'FAILED';
             console.log(`📤 Uploading result for C${caseId}: ${statusText} (${name})`);
 
-            const featureName = feature.name.replace(/\s+/g, '_');
-            const scenarioName = name.replace(/\s+/g, '_');
-            const screenshotFile = `screenshots/${featureName}--${scenarioName}.png`;
+            // Ajuste para que coincida con el screenshot generado por hooks.ts
+            const scenarioFilename = name.replace(/\s+/g, '_').toLowerCase();
+            const screenshotFile = `screenshots/${scenarioFilename}.png`;
             const screenshotPath = path.join(process.cwd(), screenshotFile);
 
             let comment = `Automated result for: ${name}`;
             if (fs.existsSync(screenshotPath)) {
-                const jenkinsScreenshotURL = `http://192.168.1.184:8080/job/playwright-demo-framework-bdd/ws/${screenshotFile}`;
-                comment += `\nScreenshot: ${jenkinsScreenshotURL}`;
+                const jenkinsURL = `http://localhost:8080/job/playwright-demo-framework-bdd/lastSuccessfulBuild/artifact/${screenshotFile}`;
+                comment += `\nScreenshot: ${jenkinsURL}`;
             }
 
             await addResultForCase(runId, caseId, status, comment);
