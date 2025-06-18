@@ -31,7 +31,7 @@ function getLatestScreenshotForScenario(scenarioName: string): string | null {
       name: file,
       time: fs.statSync(path.join(folder, file)).mtime.getTime(),
     }))
-    .sort((a, b) => b.time - a.time); // Most recent first
+    .sort((a, b) => b.time - a.time);
 
   return files.length > 0 ? files[0].name : null;
 }
@@ -100,7 +100,6 @@ async function addResultForCase(
         }
       }
 
-      // Buscar screenshot más reciente
       const latestScreenshot = getLatestScreenshotForScenario(scenarioName);
       if (latestScreenshot) {
         const jenkinsLink = BUILD_NUMBER
