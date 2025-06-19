@@ -139,13 +139,13 @@ npx playwright show-trace traces/<scenario-name>.zip
 
 ### 2. 🖼️ ImgBB Setup
 
-1. Crea una cuenta gratuita en [ImgBB](https://imgbb.com).
-2. Ve a [ImgBB API Key](https://api.imgbb.com/) y copia tu API Key personal.
-3. Esta API permite subir imágenes y obtener un link público al instante.
+1. Create a free account at [ImgBB](https://imgbb.com).
+2. Go to [ImgBB API Key](https://api.imgbb.com/) and copy your personal API Key.
+3. This API allows uploading images and instantly getting a public link.
 
 ### 3. 🔐 Environment Variables (`.env`)
 
-Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
+Create a `.env` file at the root of the project with the following variables:
 
 ```
 TESTRAIL_HOST=https://<your-subdomain>.testrail.io
@@ -156,16 +156,16 @@ TESTRAIL_SUITE_ID=your_suite_id
 IMGBB_API_KEY=your-imgbb-api-key
 ```
 
-Este archivo está incluido en `.gitignore` por seguridad.
+This file is included in `.gitignore` for security.
 
-### 4. 💡 Tips
+### 4. 💡 Tips & Tricks
 
-- Puedes probar tu clave de ImgBB manualmente con `curl`:
+- You can manually test your ImgBB key using `curl`:
   ```bash
   curl -F "image=@screenshot.png" -F "key=YOUR_KEY" https://api.imgbb.com/1/upload
   ```
-- Si no agregas la variable `IMGBB_API_KEY`, el framework aún funcionará, pero los comentarios en TestRail mostrarán un link local como fallback.
-- Usa `npm run test:with-report` para ejecutar los tests y subir resultados automáticamente.
+- If you don’t add the `IMGBB_API_KEY`, the framework will still work, but the TestRail comments will show a local fallback link instead of a public image.
+- Use `npm run test:with-report` to run the tests and automatically upload the results to TestRail.
 
 ---
 
