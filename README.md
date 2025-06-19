@@ -113,7 +113,7 @@ browser = await chromium.launch({ headless: true });
 ```bash
 npm test
 ```
-Runs all tests in **headless mode** and outputs results to the terminal.  
+Runs all tests in **headless mode** and outputs results to the terminal.
 ✅ Use this for quick local test runs without uploading anything.
 
 ```bash
