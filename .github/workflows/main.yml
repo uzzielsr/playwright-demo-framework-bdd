@@ -35,3 +35,10 @@ jobs:
 
     - name: 🧪 Run tests and report to TestRail
       run: npm run test:with-report
+
+    - name: 📸 Upload screenshots as artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: screenshots
+        path: ./screenshots/
