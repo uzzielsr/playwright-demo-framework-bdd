@@ -2,7 +2,7 @@ name: Playwright Tests
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   test:
@@ -17,26 +17,26 @@ jobs:
       IMGBB_API_KEY: ${{ secrets.IMGBB_API_KEY }}
 
     steps:
-    - name: ⬇️ Checkout repository
-      uses: actions/checkout@v4
+      - name: ⬇️ Checkout repository
+        uses: actions/checkout@v4
 
-    - name: ⚙️ Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-    - name: 📦 Install dependencies
-      run: npm install
+      - name: 📦 Install dependencies
+        run: npm install
 
-    - name: 🎭 Install Playwright browsers
-      run: npx playwright install --with-deps
+      - name: 🎭 Install Playwright browsers
+        run: npx playwright install --with-deps
 
-    - name: 🧪 Run tests and report to TestRail
-      run: npm run test:with-report
+      - name: 🧪 Run tests and report to TestRail
+        run: npm run test:with-report
 
-    - name: 📸 Upload screenshots as artifacts
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: screenshots
-        path: screenshots/
+      - name: 📸 Upload screenshots as artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: screenshots/
