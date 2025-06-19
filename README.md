@@ -126,6 +126,49 @@ npx playwright show-trace traces/<scenario-name>.zip
 
 ---
 
+## ⚙️ Configuration Guide (TestRail + ImgBB + Environment)
+
+### 1. 🧪 TestRail Setup
+
+1. Crea una cuenta en [TestRail](https://www.gurock.com/testrail/) y accede a tu espacio.
+2. Activa la API desde `Administration > Site Settings > API > Enable API`.
+3. Crea un nuevo "Project" y dentro de él un "Test Suite".
+4. Navega al proyecto y copia el `project_id` y `suite_id` desde la URL.
+5. Crea al menos un caso de prueba (e.g. "Successful login") y copia su ID (`Cxxxx`).
+6. Etiqueta tu escenario de Cucumber con `@Cxxxx`.
+
+### 2. 🖼️ ImgBB Setup
+
+1. Crea una cuenta gratuita en [ImgBB](https://imgbb.com).
+2. Ve a [ImgBB API Key](https://api.imgbb.com/) y copia tu API Key personal.
+3. Esta API permite subir imágenes y obtener un link público al instante.
+
+### 3. 🔐 Environment Variables (`.env`)
+
+Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
+
+```
+TESTRAIL_HOST=https://<your-subdomain>.testrail.io
+TESTRAIL_USER=your-email@example.com
+TESTRAIL_API_KEY=your-api-key
+TESTRAIL_PROJECT_ID=your_project_id
+TESTRAIL_SUITE_ID=your_suite_id
+IMGBB_API_KEY=your-imgbb-api-key
+```
+
+Este archivo está incluido en `.gitignore` por seguridad.
+
+### 4. 💡 Tips
+
+- Puedes probar tu clave de ImgBB manualmente con `curl`:
+  ```bash
+  curl -F "image=@screenshot.png" -F "key=YOUR_KEY" https://api.imgbb.com/1/upload
+  ```
+- Si no agregas la variable `IMGBB_API_KEY`, el framework aún funcionará, pero los comentarios en TestRail mostrarán un link local como fallback.
+- Usa `npm run test:with-report` para ejecutar los tests y subir resultados automáticamente.
+
+---
+
 ## TestRail Integration (Automatic Test Run Upload)
 
 ### ✅ Environment Variables
@@ -138,6 +181,7 @@ TESTRAIL_USER=your-email@example.com
 TESTRAIL_API_KEY=your-api-key
 TESTRAIL_PROJECT_ID=your_project_id
 TESTRAIL_SUITE_ID=your_suite_id
+IMGBB_API_KEY=your-imgbb-api-key
 ```
 
 ### 🧩 Dependencies
@@ -167,14 +211,64 @@ Scenario: Successful login
 npx ts-node src/reporting/testrail-reporter.ts
 ```
 
+### 📸 Public Screenshot Upload
+
+After each test run, the framework automatically uploads screenshots to [ImgBB](https://imgbb.com) and includes public URLs in TestRail comments.
+
+✅ When using ImgBB, screenshots are uploaded to a public URL and work regardless of CI environment.
+
+Make sure to add your `IMGBB_API_KEY` to the `.env` file to enable this feature.
+
 ### 🧵 One-liner command:
 
 ```bash
 npm test && npx ts-node src/reporting/testrail-reporter.ts
 ```
 
-### ✅ Example Output:
+---
 
+### 🛠 Jenkins Integration (Optional)
+
+You can run your tests automatically in Jenkins using a freestyle or pipeline job.
+
+#### Prerequisites:
+- Jenkins installed and accessible
+- Git and Node.js installed on the Jenkins agent
+- Environment variables configured in Jenkins or passed from a `.env` file
+
+#### Example Steps for Jenkins Pipeline:
+```groovy
+pipeline {
+  agent any
+  environment {
+    TESTRAIL_HOST = 'https://your-subdomain.testrail.io'
+    TESTRAIL_USER = 'your-email@example.com'
+    TESTRAIL_API_KEY = 'your-api-key'
+    TESTRAIL_PROJECT_ID = 'your_project_id'
+    TESTRAIL_SUITE_ID = 'your_suite_id'
+    IMGBB_API_KEY = 'your-imgbb-api-key'
+  }
+  stages {
+    stage('Checkout') {
+      steps {
+        git 'https://github.com/<your-github-username>/playwright-demo-framework-bdd.git'
+      }
+    }
+    stage('Install Dependencies') {
+      steps {
+        sh 'npm install'
+        sh 'npm run install:browsers'
+      }
+    }
+    stage('Run Tests') {
+      steps {
+        sh 'npm run test:with-report'
+      }
+    }
+  }
+}
 ```
 
-```
+🔁 **If you're not using ImgBB**, ensure Jenkins is publicly accessible (e.g., via a custom domain, VPN, or [ngrok](https://ngrok.com)) to allow TestRail to render screenshot links properly.
+
+> 💡 **Note:** Jenkins screenshots are only visible in TestRail if Jenkins is reachable from the public web. Otherwise, prefer using ImgBB for reliable public URLs.
