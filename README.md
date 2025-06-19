@@ -125,7 +125,7 @@ Runs all tests headlessly, then **uploads results to TestRail** and screenshots 
 ```bash
 npm run test:headed:with-report
 ```
-Runs all tests **in headed mode** (visible browser), and uploads results + screenshots.  
+Runs all tests **in headed mode** (visible browser), and uploads results + screenshots.
 ✅ Useful for debugging failed scenarios manually while keeping the reporting.
 
 ---
