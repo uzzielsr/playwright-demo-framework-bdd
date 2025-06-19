@@ -69,7 +69,7 @@ git clone https://github.com/<your-github-username>/playwright-demo-framework-bd
 cd playwright-demo-framework-bdd
 ```
 
-### Install Project Dependencies
+### Install Project Dependencies 
 
 ```bash
 npm install
