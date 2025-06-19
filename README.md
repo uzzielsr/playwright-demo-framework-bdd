@@ -294,3 +294,15 @@ pipeline {
 🔁 **If you're not using ImgBB**, ensure Jenkins is publicly accessible (e.g., via a custom domain, VPN, or [ngrok](https://ngrok.com)) to allow TestRail to render screenshot links properly.
 
 > 💡 **Note:** Jenkins screenshots are only visible in TestRail if Jenkins is reachable from the public web. Otherwise, prefer using ImgBB for reliable public URLs.
+
+---
+
+## ✅ GitHub Actions Check Requirement
+
+This project is configured to **require GitHub Actions checks to pass before merging any pull request** into the `main` branch.
+
+To enable this protection:
+- A branch protection rule was added for `main` via GitHub Settings → Branches.
+- The rule requires that the GitHub Actions workflow (e.g., `main.yml`) completes successfully before the “Merge pull request” button becomes available.
+
+🔒 This ensures all contributions meet automation quality gates before integration.
