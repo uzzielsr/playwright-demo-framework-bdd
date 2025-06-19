@@ -6,10 +6,10 @@
     "test": "cucumber-js src/features --require-module ts-node/register --require src/steps/**/*.ts --require src/support/**/*.ts --format json:reports/report.json --format summary",
     "test:debug": "cucumber-js src/features --require-module ts-node/register --require src/steps/**/*.ts --require src/support/**/*.ts --format json:reports/report.json --format summary",
     "test:headed": "HEADLESS=false npm test",
-    "test:with-report": "npm test && npm run report:testrail",
-    "test:headed:with-report": "HEADLESS=false npm test && npm run report:testrail",
+    "test:with-report": "npm test; npm run report:testrail",
+    "test:headed:with-report": "HEADLESS=false npm test; npm run report:testrail",
     "install:browsers": "npx playwright install --with-deps",
-    "report:testrail": "ts-node src/reporting/testrail-reporter.ts",
+    "report:testrail": "cross-env ts-node src/reporting/testrail-reporter.ts",
     "serve:screenshots": "ts-node src/reporting/serve-screenshots.ts"
   },
   "devDependencies": {
@@ -19,8 +19,12 @@
     "@types/node": "^20.11.30",
     "axios": "^1.10.0",
     "chalk": "^5.3.0",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.5.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "form-data": "^4.0.3"
   }
 }

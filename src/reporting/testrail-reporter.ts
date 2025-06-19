@@ -37,8 +37,8 @@ function getLatestScreenshotForScenario(scenarioName: string): string | null {
 }
 
 axios.interceptors.response.use(
-    response => response,
-    error => {
+    (response) => response,
+    (error) => {
         if (error.config?.url?.includes('imgbb')) {
             return Promise.resolve({ data: { data: { url: 'Screenshot upload failed' } } });
         }
@@ -90,19 +90,23 @@ async function addResultForCase(
     const runId = await createTestRun(runName);
 
     for (const feature of reportData) {
+        console.log(`Feature: ${feature.name}`);
+
         for (const element of feature.elements) {
+            const scenarioName = element.name;
             const tags = element.tags.map((t: any) => t.name);
             const caseTag = tags.find((t: string) => /^@C\d+/.test(t));
             if (!caseTag) continue;
 
             const caseId = parseInt(caseTag.replace('@C', ''), 10);
-            const status = element.steps.every((s: any) => s.result.status === 'passed') ? 1 : 5;
-            const statusText = status === 1 ? 'PASSED' : 'FAILED';
-            const scenarioName = element.name;
+            const passed = element.steps.every((s: any) => s.result.status === 'passed');
+            const status = passed ? 1 : 5;
+            const statusText = passed ? 'PASSED' : 'FAILED';
 
             let comment = `Automated result for: ${scenarioName}`;
+            let screenshotNote = '';
 
-            if (status === 5) {
+            if (!passed) {
                 const failedStep = element.steps.find((s: any) => s.result.status === 'failed');
                 if (failedStep?.result?.error_message) {
                     comment += `\n\n❌ Error:\n${failedStep.result.error_message}`;
@@ -114,20 +118,22 @@ async function addResultForCase(
                 const screenshotPath = path.join(process.cwd(), 'screenshots', screenshotName);
                 const publicLink = await uploadToImgBB(screenshotPath);
 
-                if (publicLink && publicLink !== 'Screenshot upload failed') {
-                    comment += `\n\n🖼️ Screenshot: ${publicLink}`;
-                } else {
-                    const fallbackLink = process.env.CI
-                        ? (BUILD_NUMBER
-                            ? `http://localhost:8080/job/playwright-demo-framework-bdd/${BUILD_NUMBER}/artifact/screenshots/${screenshotName}`
-                            : `http://localhost:8080/job/playwright-demo-framework-bdd/lastSuccessfulBuild/artifact/screenshots/${screenshotName}`)
-                        : `./screenshots/${screenshotName}`;
+                const linkToUse =
+                    publicLink && publicLink !== 'Screenshot upload failed'
+                        ? publicLink
+                        : process.env.CI
+                            ? (BUILD_NUMBER
+                                ? `http://localhost:8080/job/playwright-demo-framework-bdd/${BUILD_NUMBER}/artifact/screenshots/${screenshotName}`
+                                : `http://localhost:8080/job/playwright-demo-framework-bdd/lastSuccessfulBuild/artifact/screenshots/${screenshotName}`)
+                            : `./screenshots/${screenshotName}`;
 
-                    comment += `\n\n🖼️ Screenshot: ${fallbackLink}`;
+                if (!passed) {
+                    screenshotNote = `\n        Screenshot: ${linkToUse}`;
+                    comment += `\n\n🖼️ Screenshot: ${linkToUse}`;
                 }
             }
 
-            console.log(`📤 Uploading result for C${caseId}: ${statusText} (${scenarioName})`);
+            console.log(`    Scenario: ${scenarioName} → ${statusText}${screenshotNote}`);
             await addResultForCase(runId, caseId, status, comment);
         }
     }
