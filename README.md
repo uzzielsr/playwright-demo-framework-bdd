@@ -252,7 +252,7 @@ npm test && npx ts-node src/reporting/testrail-reporter.ts
 
 ### 🛠 Jenkins Integration (Optional)
 
-You can run your tests automatically in Jenkins using a freestyle or pipeline job.
+You can run your tests automatically in Jenkins using a freestyle or pipeline job. 
 
 #### Prerequisites:
 - Jenkins installed and accessible
