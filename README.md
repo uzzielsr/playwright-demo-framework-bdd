@@ -108,27 +108,28 @@ browser = await chromium.launch({ headless: true });
 
 ---
 
-### 🔁 Run Tests (Basic & With Reporting)
+
+### 🧪 Run Tests
+
+Choose the appropriate command based on your testing and reporting needs.
 
 ```bash
 npm test
 ```
-Runs all tests in **headless mode** and outputs results to the terminal.
-✅ Use this for quick local test runs without uploading anything.
+✅ Runs all tests in **headless mode** and outputs a simple result summary to the terminal.  
+❌ Does not upload results or screenshots.
 
 ```bash
 npm run test:with-report
 ```
-Runs all tests headlessly, then **uploads results to TestRail** and screenshots to ImgBB (if configured).  
-✅ Best for CI or automated reporting.
+✅ Runs all tests headlessly, then **automatically uploads results** to TestRail and screenshots to ImgBB (if configured).  
+🟢 Best for CI pipelines or automated reporting environments.
 
 ```bash
 npm run test:headed:with-report
 ```
-Runs all tests **in headed mode** (visible browser), and uploads results + screenshots.
-✅ Useful for debugging failed scenarios manually while keeping the reporting.
-
----
+✅ Runs all tests in **headed mode** (visible browser), with TestRail + ImgBB integration.  
+🛠️ Ideal for debugging failing scenarios while still reporting the results.
 
 ## Output Artifacts
 
@@ -294,3 +295,13 @@ pipeline {
 🔁 **If you're not using ImgBB**, ensure Jenkins is publicly accessible (e.g., via a custom domain, VPN, or [ngrok](https://ngrok.com)) to allow TestRail to render screenshot links properly.
 
 > 💡 **Note:** Jenkins screenshots are only visible in TestRail if Jenkins is reachable from the public web. Otherwise, prefer using ImgBB for reliable public URLs.
+
+---
+
+## ✅ GitHub Actions Checks
+
+This repository uses **GitHub Actions** to automatically run tests on each push and pull request. The workflow is defined in `.github/workflows/main.yml`.
+
+### ✅ Required for Merge
+
+Pull requests cannot be merged into `main` unless the GitHub Actions check (`Playwright Tests`) completes successfully. This ensures that all contributions meet the minimum stability and functionality requirements before being integrated into the main branch.
