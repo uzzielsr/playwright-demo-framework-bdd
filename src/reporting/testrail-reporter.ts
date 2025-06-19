@@ -118,18 +118,16 @@ async function addResultForCase(
                 const screenshotPath = path.join(process.cwd(), 'screenshots', screenshotName);
                 const publicLink = await uploadToImgBB(screenshotPath);
 
-                const linkToUse =
-                    publicLink && publicLink !== 'Screenshot upload failed'
-                        ? publicLink
-                        : process.env.CI
-                            ? (BUILD_NUMBER
-                                ? `http://localhost:8080/job/playwright-demo-framework-bdd/${BUILD_NUMBER}/artifact/screenshots/${screenshotName}`
-                                : `http://localhost:8080/job/playwright-demo-framework-bdd/lastSuccessfulBuild/artifact/screenshots/${screenshotName}`)
-                            : `./screenshots/${screenshotName}`;
+                if (publicLink && publicLink !== 'Screenshot upload failed') {
+                    comment += `\n\n🖼️ Screenshot: ${publicLink}`;
+                } else {
+                    const fallbackLink = process.env.CI
+                        ? (BUILD_NUMBER
+                            ? `http://localhost:8080/job/playwright-demo-framework-bdd/${BUILD_NUMBER}/artifact/screenshots/${screenshotName}`
+                            : `http://localhost:8080/job/playwright-demo-framework-bdd/lastSuccessfulBuild/artifact/screenshots/${screenshotName}`)
+                        : `./screenshots/${screenshotName}`;
 
-                if (!passed) {
-                    screenshotNote = `\n        Screenshot: ${linkToUse}`;
-                    comment += `\n\n🖼️ Screenshot: ${linkToUse}`;
+                    comment += `\n\n🖼️ Screenshot (fallback): ${fallbackLink}`;
                 }
             }
 
