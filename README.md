@@ -4,7 +4,7 @@ Enterprise-grade end-to-end automation framework using **Playwright + TypeScript
 
 ---
 
-## Tech Stack
+## Tech Stack 
 
 - Playwright
 - TypeScript
