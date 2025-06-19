@@ -108,6 +108,28 @@ browser = await chromium.launch({ headless: true });
 
 ---
 
+### 🔁 Run Tests (Basic & With Reporting)
+
+```bash
+npm test
+```
+Runs all tests in **headless mode** and outputs results to the terminal.  
+✅ Use this for quick local test runs without uploading anything.
+
+```bash
+npm run test:with-report
+```
+Runs all tests headlessly, then **uploads results to TestRail** and screenshots to ImgBB (if configured).  
+✅ Best for CI or automated reporting.
+
+```bash
+npm run test:headed:with-report
+```
+Runs all tests **in headed mode** (visible browser), and uploads results + screenshots.  
+✅ Useful for debugging failed scenarios manually while keeping the reporting.
+
+---
+
 ## Output Artifacts
 
 ### Screenshots:
