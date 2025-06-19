@@ -1,0 +1,37 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      TESTRAIL_HOST: ${{ secrets.TESTRAIL_HOST }}
+      TESTRAIL_USER: ${{ secrets.TESTRAIL_USER }}
+      TESTRAIL_API_KEY: ${{ secrets.TESTRAIL_API_KEY }}
+      TESTRAIL_PROJECT_ID: ${{ secrets.TESTRAIL_PROJECT_ID }}
+      TESTRAIL_SUITE_ID: ${{ secrets.TESTRAIL_SUITE_ID }}
+      IMGBB_API_KEY: ${{ secrets.IMGBB_API_KEY }}
+
+    steps:
+    - name: ⬇️ Checkout repository
+      uses: actions/checkout@v4
+
+    - name: ⚙️ Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: 📦 Install dependencies
+      run: npm install
+
+    - name: 🎭 Install Playwright browsers
+      run: npx playwright install --with-deps
+
+    - name: 🧪 Run tests and report to TestRail
+      run: npm run test:with-report
