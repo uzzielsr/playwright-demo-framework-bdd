@@ -130,12 +130,12 @@ npx playwright show-trace traces/<scenario-name>.zip
 
 ### 1. 🧪 TestRail Setup
 
-1. Crea una cuenta en [TestRail](https://www.gurock.com/testrail/) y accede a tu espacio.
-2. Activa la API desde `Administration > Site Settings > API > Enable API`.
-3. Crea un nuevo "Project" y dentro de él un "Test Suite".
-4. Navega al proyecto y copia el `project_id` y `suite_id` desde la URL.
-5. Crea al menos un caso de prueba (e.g. "Successful login") y copia su ID (`Cxxxx`).
-6. Etiqueta tu escenario de Cucumber con `@Cxxxx`.
+1. Create an account on [TestRail](https://www.gurock.com/testrail/) and log into your workspace.
+2. Enable the API under `Administration > Site Settings > API > Enable API`.
+3. Create a new 'Project' and inside it a 'Test Suite'.
+4. Navigate to the project and copy the `project_id` and `suite_id` from the URL.
+5. Create at least one test case (e.g., "Successful login") and copy its ID (`Cxxxx`).
+6. Tag your Cucumber scenario with `@Cxxxx`.
 
 ### 2. 🖼️ ImgBB Setup
 
