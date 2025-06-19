@@ -6,9 +6,11 @@
     "test": "cucumber-js src/features --require-module ts-node/register --require src/steps/**/*.ts --require src/support/**/*.ts --format json:reports/report.json --format summary",
     "test:debug": "cucumber-js src/features --require-module ts-node/register --require src/steps/**/*.ts --require src/support/**/*.ts --format json:reports/report.json --format summary",
     "test:headed": "HEADLESS=false npm test",
+    "test:with-report": "npm test && npm run report:testrail",
+    "test:headed:with-report": "HEADLESS=false npm test && npm run report:testrail",
     "install:browsers": "npx playwright install --with-deps",
     "report:testrail": "ts-node src/reporting/testrail-reporter.ts",
-    "test:with-report": "npm test; npm run report:testrail"
+    "serve:screenshots": "ts-node src/reporting/serve-screenshots.ts"
   },
   "devDependencies": {
     "@cucumber/cucumber": "^9.1.2",
