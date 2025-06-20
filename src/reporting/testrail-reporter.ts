@@ -13,7 +13,10 @@ const {
     TESTRAIL_PROJECT_ID,
     TESTRAIL_SUITE_ID,
     BUILD_NUMBER,
+    JENKINS_BASE_URL,
 } = process.env;
+
+const jenkinsBaseUrl = JENKINS_BASE_URL || 'http://localhost:9090';
 
 const reportPath = path.join(process.cwd(), 'reports', 'report.json');
 const reportData = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
@@ -123,8 +126,8 @@ async function addResultForCase(
                 } else {
                     const fallbackLink = process.env.CI
                         ? (BUILD_NUMBER
-                            ? `http://localhost:8080/job/playwright-demo-framework-bdd/${BUILD_NUMBER}/artifact/screenshots/${screenshotName}`
-                            : `http://localhost:8080/job/playwright-demo-framework-bdd/lastSuccessfulBuild/artifact/screenshots/${screenshotName}`)
+                            ? `${jenkinsBaseUrl}/job/playwright-demo-framework-bdd/${BUILD_NUMBER}/artifact/screenshots/${screenshotName}`
+                            : `${jenkinsBaseUrl}/job/playwright-demo-framework-bdd/lastSuccessfulBuild/artifact/screenshots/${screenshotName}`)
                         : `./screenshots/${screenshotName}`;
 
                     comment += `\n\n🖼️ Screenshot (fallback): ${fallbackLink}`;
