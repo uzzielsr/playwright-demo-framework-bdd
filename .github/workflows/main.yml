@@ -8,14 +8,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    env:
-      TESTRAIL_HOST: ${{ secrets.TESTRAIL_HOST }}
-      TESTRAIL_USER: ${{ secrets.TESTRAIL_USER }}
-      TESTRAIL_API_KEY: ${{ secrets.TESTRAIL_API_KEY }}
-      TESTRAIL_PROJECT_ID: ${{ secrets.TESTRAIL_PROJECT_ID }}
-      TESTRAIL_SUITE_ID: ${{ secrets.TESTRAIL_SUITE_ID }}
-      IMGBB_API_KEY: ${{ secrets.IMGBB_API_KEY }}
-
     steps:
       - name: ⬇️ Checkout repository
         uses: actions/checkout@v4
@@ -30,6 +22,18 @@ jobs:
 
       - name: 🎭 Install Playwright browsers
         run: npx playwright install --with-deps
+
+      - name: 🛠️ Create .env file
+        run: |
+          echo "TESTRAIL_HOST=${{ secrets.TESTRAIL_HOST }}" >> .env
+          echo "TESTRAIL_USER=${{ secrets.TESTRAIL_USER }}" >> .env
+          echo "TESTRAIL_API_KEY=${{ secrets.TESTRAIL_API_KEY }}" >> .env
+          echo "TESTRAIL_PROJECT_ID=${{ secrets.TESTRAIL_PROJECT_ID }}" >> .env
+          echo "TESTRAIL_SUITE_ID=${{ secrets.TESTRAIL_SUITE_ID }}" >> .env
+          echo "IMGBB_API_KEY=${{ secrets.IMGBB_API_KEY }}" >> .env
+          echo "TEST_EMAIL=${{ secrets.TEST_EMAIL }}" >> .env
+          echo "TEST_PASSWORD=${{ secrets.TEST_PASSWORD }}" >> .env
+          echo "JENKINS_BASE_URL=${{ secrets.JENKINS_BASE_URL }}" >> .env
 
       - name: 🧪 Run tests and report to TestRail
         run: npm run test:with-report
