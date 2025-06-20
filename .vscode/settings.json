@@ -1,0 +1,24 @@
+{
+    "cucumberautocomplete.steps": [
+        "src/steps/**/*.ts"
+    ],
+    "cucumberautocomplete.syncfeatures": "src/features/**/*.feature",
+    "cucumberautocomplete.strictGherkinCompletion": true,
+    "cucumberautocomplete.smartSnippets": true,
+    "cucumberautocomplete.skipDocStringsFormat": true,
+    "cucumberautocomplete.hideStepDefPreview": false,
+    "editor.quickSuggestions": {
+        "strings": true
+    },
+    "cucumberautocomplete.highlightUndefinedSteps": true,
+    "cucumberautocomplete.customParameters": [
+        {
+            "parameter": "\\d+",
+            "snippet": "{int}"
+        },
+        {
+            "parameter": "\\w+",
+            "snippet": "{word}"
+        }
+    ]
+}
