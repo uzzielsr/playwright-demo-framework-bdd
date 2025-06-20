@@ -17,9 +17,33 @@ const {
 } = process.env;
 
 const jenkinsBaseUrl = JENKINS_BASE_URL || 'http://localhost:9090';
-
 const reportPath = path.join(process.cwd(), 'reports', 'report.json');
-const reportData = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
+
+interface StepResult {
+    status: string;
+    error_message?: string;
+}
+
+interface Step {
+    result: StepResult;
+}
+
+interface Tag {
+    name: string;
+}
+
+interface ScenarioElement {
+    name: string;
+    tags: Tag[];
+    steps: Step[];
+}
+
+interface CucumberJsonFeature {
+    name: string;
+    elements: ScenarioElement[];
+}
+
+const reportData: CucumberJsonFeature[] = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
 
 function getLatestScreenshotForScenario(scenarioName: string): string | null {
     const folder = path.join(process.cwd(), 'screenshots');
@@ -92,28 +116,28 @@ async function addResultForCase(
     const runName = `Automated Run - ${new Date().toLocaleString()}`;
     const runId = await createTestRun(runName);
 
+    let hasFailures = false;
+
     for (const feature of reportData) {
         console.log(`Feature: ${feature.name}`);
 
         for (const element of feature.elements) {
             const scenarioName = element.name;
-            const tags = element.tags.map((t: any) => t.name);
-            const caseTag = tags.find((t: string) => /^@C\d+/.test(t));
+            const tags = element.tags.map((t) => t.name);
+            const caseTag = tags.find((t) => /^@C\d+/.test(t));
             if (!caseTag) continue;
 
             const caseId = parseInt(caseTag.replace('@C', ''), 10);
-            const passed = element.steps.every((s: any) => s.result.status === 'passed');
+            const passed = element.steps.every((s) => s.result.status === 'passed');
             const status = passed ? 1 : 5;
             const statusText = passed ? 'PASSED' : 'FAILED';
+            if (!passed) hasFailures = true;
 
             let comment = `Automated result for: ${scenarioName}`;
-            let screenshotNote = '';
 
-            if (!passed) {
-                const failedStep = element.steps.find((s: any) => s.result.status === 'failed');
-                if (failedStep?.result?.error_message) {
-                    comment += `\n\n❌ Error:\n${failedStep.result.error_message}`;
-                }
+            const failedStep = element.steps.find((s) => s.result.status === 'failed');
+            if (failedStep?.result?.error_message) {
+                comment += `\n\n❌ Error:\n${failedStep.result.error_message}`;
             }
 
             const screenshotName = getLatestScreenshotForScenario(scenarioName);
@@ -134,10 +158,15 @@ async function addResultForCase(
                 }
             }
 
-            console.log(`    Scenario: ${scenarioName} → ${statusText}${screenshotNote}`);
+            console.log(`    Scenario: ${scenarioName} → ${statusText}`);
             await addResultForCase(runId, caseId, status, comment);
         }
     }
 
     console.log(`✅ Results uploaded to TestRail (Test Run ID: ${runId})`);
+
+    if (hasFailures) {
+        console.error('❌ Some tests failed.');
+        process.exit(1);
+    }
 })();
