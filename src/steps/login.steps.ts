@@ -22,7 +22,7 @@ When('I enter invalid credentials', async function (this: World) {
 
 Then('I should see that the user is logged in', async function () {
     const isLoggedIn = await loginPage.isUserLoggedIn();
-    expect(isLoggedIn).toBeTruthys();
+    expect(isLoggedIn).toBeTruthy();
 });
 
 Then('I should see an error message', async function () {
