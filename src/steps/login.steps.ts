@@ -11,7 +11,9 @@ Given('I am on the login page', async function (this: World) {
 });
 
 When('I enter valid credentials', async function (this: World) {
-    await loginPage.login('Uzziel316@gmail.com', 'T3st3r@1234');
+    const email = process.env.TEST_EMAIL!;
+    const password = process.env.TEST_PASSWORD!;
+    await loginPage.login(email, password);
 });
 
 When('I enter invalid credentials', async function (this: World) {
