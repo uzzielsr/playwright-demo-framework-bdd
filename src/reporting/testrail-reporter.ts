@@ -112,6 +112,20 @@ async function addResultForCase(
     );
 }
 
+async function getScreenshotURL(scenarioName: string, screenshotName: string): Promise<string> {
+    const screenshotPath = path.join(process.cwd(), 'screenshots', screenshotName);
+    const runningInJenkins = !!JENKINS_BASE_URL;
+
+    if (runningInJenkins && BUILD_NUMBER) {
+        return `${jenkinsBaseUrl}/job/playwright-demo-framework-bdd/${BUILD_NUMBER}/artifact/screenshots/${screenshotName}`;
+    } else {
+        const publicLink = await uploadToImgBB(screenshotPath);
+        return publicLink && publicLink !== 'Screenshot upload failed'
+            ? publicLink
+            : `./screenshots/${screenshotName}`;
+    }
+}
+
 (async () => {
     const runName = `Automated Run - ${new Date().toLocaleString()}`;
     const runId = await createTestRun(runName);
@@ -142,20 +156,8 @@ async function addResultForCase(
 
             const screenshotName = getLatestScreenshotForScenario(scenarioName);
             if (screenshotName) {
-                const screenshotPath = path.join(process.cwd(), 'screenshots', screenshotName);
-                const publicLink = await uploadToImgBB(screenshotPath);
-
-                if (publicLink && publicLink !== 'Screenshot upload failed') {
-                    comment += `\n\n🖼️ Screenshot: ${publicLink}`;
-                } else {
-                    const fallbackLink = process.env.CI
-                        ? (BUILD_NUMBER
-                            ? `${jenkinsBaseUrl}/job/playwright-demo-framework-bdd/${BUILD_NUMBER}/artifact/screenshots/${screenshotName}`
-                            : `${jenkinsBaseUrl}/job/playwright-demo-framework-bdd/lastSuccessfulBuild/artifact/screenshots/${screenshotName}`)
-                        : `./screenshots/${screenshotName}`;
-
-                    comment += `\n\n🖼️ Screenshot (fallback): ${fallbackLink}`;
-                }
+                const url = await getScreenshotURL(scenarioName, screenshotName);
+                comment += `\n\n🖼️ Screenshot: ${url}`;
             }
 
             console.log(`    Scenario: ${scenarioName} → ${statusText}`);
