@@ -15,6 +15,7 @@ Enterprise-grade end-to-end automation framework using **Playwright + TypeScript
 - Screenshots per scenario
 - GitHub versioned
 - Fully expandable to CI/CD enterprise pipelines
+- Selector constants via TypeScript modules
 
 ---
 
@@ -37,7 +38,9 @@ playwright-demo-framework-bdd/
 │   ├── steps/                          # Cucumber step definitions
 │   ├── support/                        # Global hooks, Cucumber World configuration
 │   ├── reporting/                      # Custom scripts for reporting (e.g., TestRail)
-│   └── utils/                          # Utility functions and helpers (for future use)
+│   ├── utils/                          # Utility functions and helpers (for future use)
+│   ├── constants/                      # Centralized constants
+│   │   └── selectors/                  # Selectors grouped per page/component
 │
 ├── screenshots/                        # Automatic screenshots per scenario
 ├── traces/                             # Playwright traces (only saved on failure)
@@ -108,6 +111,14 @@ browser = await chromium.launch({ headless: true });
 
 ---
 
+### Run with Visual Debugging + Specific Tags
+
+To run a specific tag with the browser visible:
+```bash
+npx playwright test --headed --project=chromium -- --tags "@tagname"
+```
+
+---
 
 ### 🧪 Run Tests
 
@@ -136,6 +147,18 @@ npm run test:headed:with-report
 ### Screenshots:
 
 - Saved to: `/screenshots/`
+
+### Selectors as Constants
+All page selectors are defined in files under:
+```
+src/constants/selectors/
+```
+
+Example:  
+- `login.selectors.ts`: Contains locators for login page
+- `dashboard.selectors.ts`: Contains locators for post-login area
+
+This improves test maintainability by avoiding hardcoded selectors.
 
 ### Traces (only for failed scenarios):
 
@@ -190,6 +213,20 @@ This file is included in `.gitignore` for security.
 - If you don’t add the `IMGBB_API_KEY`, the framework will still work, but the TestRail comments will show a local fallback link instead of a public image.
 - Use `npm run test:with-report` to run the tests and automatically upload the results to TestRail.
 
+### 5. 🌐 Base URL & Credentials Setup
+To allow flexible configuration and testing across environments, the login page dynamically loads values from `.env`.
+
+Add these variables to your `.env` file:
+```
+BASE_URL=https://magento.softwaretestingboard.com/
+TEST_EMAIL=your-valid-email@example.com
+TEST_PASSWORD=your-valid-password
+INVALID_EMAIL=wrong@domain.com
+INVALID_PASSWORD=wrongpassword
+```
+
+These will be used automatically during tests for valid and invalid login scenarios.
+
 ---
 
 ## TestRail Integration (Automatic Test Run Upload)
@@ -239,6 +276,8 @@ npx ts-node src/reporting/testrail-reporter.ts
 After each test run, the framework automatically uploads screenshots to [ImgBB](https://imgbb.com) and includes public URLs in TestRail comments.
 
 ✅ When using ImgBB, screenshots are uploaded to a public URL and work regardless of CI environment.
+
+> 🔒 Fallback screenshot links will reference Jenkins if running in CI and no `IMGBB_API_KEY` is set.
 
 Make sure to add your `IMGBB_API_KEY` to the `.env` file to enable this feature.
 
@@ -291,6 +330,10 @@ pipeline {
   }
 }
 ```
+
+> ✅ Jenkins automatically stores screenshots as artifacts under `/screenshots`. Public visibility requires Jenkins to be accessible via internet or VPN.
+
+> 🖼️ For guaranteed screenshot visibility in TestRail, ImgBB is preferred.
 
 🔁 **If you're not using ImgBB**, ensure Jenkins is publicly accessible (e.g., via a custom domain, VPN, or [ngrok](https://ngrok.com)) to allow TestRail to render screenshot links properly.
 

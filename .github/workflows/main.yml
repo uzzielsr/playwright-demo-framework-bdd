@@ -31,8 +31,13 @@ jobs:
           echo "TESTRAIL_PROJECT_ID=${{ secrets.TESTRAIL_PROJECT_ID }}" >> .env
           echo "TESTRAIL_SUITE_ID=${{ secrets.TESTRAIL_SUITE_ID }}" >> .env
           echo "IMGBB_API_KEY=${{ secrets.IMGBB_API_KEY }}" >> .env
+
+          echo "BASE_URL=${{ secrets.BASE_URL }}" >> .env
           echo "TEST_EMAIL=${{ secrets.TEST_EMAIL }}" >> .env
           echo "TEST_PASSWORD=${{ secrets.TEST_PASSWORD }}" >> .env
+          echo "INVALID_EMAIL=${{ secrets.INVALID_EMAIL }}" >> .env
+          echo "INVALID_PASSWORD=${{ secrets.INVALID_PASSWORD }}" >> .env
+
           echo "JENKINS_BASE_URL=${{ secrets.JENKINS_BASE_URL }}" >> .env
 
       - name: 🧪 Run tests and report to TestRail
