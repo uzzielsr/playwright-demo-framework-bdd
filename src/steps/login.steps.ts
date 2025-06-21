@@ -11,13 +11,11 @@ Given('I am on the login page', async function (this: World) {
 });
 
 When('I enter valid credentials', async function (this: World) {
-    const email = process.env.TEST_EMAIL!;
-    const password = process.env.TEST_PASSWORD!;
-    await loginPage.login(email, password);
+    await loginPage.loginWithValidCredentials();
 });
 
 When('I enter invalid credentials', async function (this: World) {
-    await loginPage.login('invalid@domain.com', 'wrongpassword');
+    await loginPage.loginWithInvalidCredentials();
 });
 
 Then('I should see that the user is logged in', async function () {
