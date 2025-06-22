@@ -1,6 +1,6 @@
 {
   "name": "playwright-demo-framework-bdd",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "type": "commonjs",
   "scripts": {
     "test": "cucumber-js src/features --require-module ts-node/register --require src/steps/**/*.ts --require src/support/**/*.ts --format json:reports/report.json --format summary",
@@ -13,10 +13,10 @@
     "serve:screenshots": "ts-node src/reporting/serve-screenshots.ts"
   },
   "devDependencies": {
-    "@cucumber/cucumber": "^9.1.2",
-    "@faker-js/faker": "^8.3.1",
-    "@playwright/test": "^1.43.1",
-    "@types/node": "^20.11.30",
+    "@cucumber/cucumber": "^11.3.0",
+    "@faker-js/faker": "^9.8.0",
+    "@playwright/test": "^1.53.1",
+    "@types/node": "^24.0.3",
     "axios": "^1.10.0",
     "chalk": "^5.3.0",
     "cross-env": "^7.0.3",
