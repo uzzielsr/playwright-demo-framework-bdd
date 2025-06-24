@@ -6,6 +6,8 @@ on:
   pull_request:
     branches: ["main"]
 
+run-name: "Playwright Run – ${{ github.event_name }} – Run #${{ github.run_number }}"
+
 jobs:
   test:
     runs-on: ubuntu-latest
