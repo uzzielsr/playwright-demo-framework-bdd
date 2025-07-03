@@ -12,8 +12,11 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
-          name: Run tests
-          command: npm test --passWithNoTests
+          name: 🎭 Install Playwright browsers
+          command: npx playwright install --with-deps
+      - run:
+          name: 🧪 Run tests with TestRail report
+          command: npm run test:with-report
   deploy:
     # This is an example deploy job, not actually used by the workflow
     docker:
