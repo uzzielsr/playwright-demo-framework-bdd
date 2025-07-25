@@ -1,0 +1,62 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: "ubuntu-latest"
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: "18.x"
+    displayName: "Use Node.js 18"
+
+  - script: |
+      rm -rf node_modules package-lock.json
+      npm install
+    displayName: "Clean install dependencies"
+
+  - script: |
+      npx playwright install --with-deps
+    displayName: "Install Playwright browsers"
+
+  - script: |
+      mkdir -p reports
+    displayName: "Create reports directory"
+
+  - script: |
+      echo "Setting up .env"
+      echo "TESTRAIL_HOST=$(TESTRAIL_HOST)" >> .env
+      echo "TESTRAIL_USER=$(TESTRAIL_USER)" >> .env
+      echo "TESTRAIL_API_KEY=$(TESTRAIL_API_KEY)" >> .env
+      echo "TESTRAIL_PROJECT_ID=$(TESTRAIL_PROJECT_ID)" >> .env
+      echo "TESTRAIL_SUITE_ID=$(TESTRAIL_SUITE_ID)" >> .env
+      echo "IMGBB_API_KEY=$(IMGBB_API_KEY)" >> .env
+      echo "BASE_URL=$(BASE_URL)" >> .env
+      echo "TEST_EMAIL=$(TEST_EMAIL)" >> .env
+      echo "TEST_PASSWORD=$(TEST_PASSWORD)" >> .env
+      echo "INVALID_EMAIL=$(INVALID_EMAIL)" >> .env
+      echo "INVALID_PASSWORD=$(INVALID_PASSWORD)" >> .env
+      echo "JENKINS_BASE_URL=$(JENKINS_BASE_URL)" >> .env
+    displayName: "Create .env from pipeline variables"
+
+  - script: |
+      npm test
+    displayName: "Run Cucumber tests"
+
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFormat: "JUnit"
+      testResultsFiles: "reports/**/*.xml"
+      failTaskOnFailedTests: true
+    displayName: "Publish test results"
+
+  - task: PublishBuildArtifacts@1
+    condition: succeededOrFailed()
+    inputs:
+      PathtoPublish: "reports"
+      ArtifactName: "test-reports"
+      publishLocation: "Container"
+    displayName: "Publish test reports"
